@@ -4,8 +4,8 @@ import Submitted from "./components/Submitted";
 const App = () => {
 
   const [email, setEmail] = useState("");
-  const [ valid, setValid ] = useState(true);
-  const [ submitted, setSubmitted ] = useState(false);
+  const [ valid, setValid ] = useState(false);
+  const [ submitted, setSubmitted ] = useState(null);
 
   const isValidEmail = (email) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
@@ -15,8 +15,7 @@ const App = () => {
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     if (!isValidEmail(e.target.value)) {
-      setValid(false);
-      console.log('invalid EMAIL!')
+      console.log('invalid email')
     } else {
       setValid(true);
     }
@@ -25,9 +24,11 @@ const App = () => {
   const handleSubmit = (e) => {
     if (!valid) {
       e.preventDefault();
-    } else {
-        e.preventDefault();
+      setSubmitted(false);
+      setValid(false);
+    } else if (valid) {
         setSubmitted(true);
+        e.preventDefault();
     }
   }
 
@@ -45,9 +46,12 @@ const App = () => {
           </ul>
           <form onSubmit={handleSubmit}>
             <div className="input-field">
-              <label>Email address</label>
+              <div className="label-container">
+                <label>Email address</label>
+                {!valid && submitted === false && <label className="invalid-label">Valid email required</label>}
+              </div>
               <input
-                className={!valid ? 'red' : 'green'}
+                className={!valid && submitted === false ? 'red' : ''}
                 placeholder="email@company.com"
                 value={email}
                 onChange={handleEmailChange}
@@ -55,6 +59,7 @@ const App = () => {
             </div>
             <button type="submit">Subscribe to monthly newsletter</button>
           </form>
+
         </div>
         <img src="/illustration-sign-up-desktop.svg" alt="sign-up" />
       </div>
